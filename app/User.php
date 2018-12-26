@@ -27,4 +27,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Vote 를 여러개 가진다.
+     */
+    public function votes() {
+        return $this->hasMany(Vote::class);
+    }
 }
