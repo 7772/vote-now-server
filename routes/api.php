@@ -2,17 +2,21 @@
 
 use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+$domainPrefix = (config('app.env', '') == 'production') ? '' : (config('app.sub_domain_prefix', '').'-');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+$apiRoutes = function () {
+    Route::namespace('V1')->prefix('v1')->group(function () {
+
+        /* 회원 가입 */
+        Route::post('/auth/register', 'RegistrationController@register');
+
+        Route::middleware('auth:api')->group(function () {
+            /* 세션 체크 */
+            Route::get('/session', 'SessionController@check');
+        });
+
+    });
+};
+
+/* App */
+Route::domain($domainPrefix . 'api.vote-now.io')->namespace('Api')->group($apiRoutes);
